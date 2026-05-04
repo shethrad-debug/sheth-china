@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#b8272c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="China Trip">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<title>Sheth Family China Adventure · May 23 – Jun 9, 2026</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='32' fill='%23b8272c'/><text x='90' y='118' font-size='110' text-anchor='middle' fill='%23d4a017' font-family='Arial Black,sans-serif' font-weight='900'>中</text></svg>">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23b8272c'/><text x='32' y='44' font-size='40' text-anchor='middle' fill='%23d4a017' font-family='Arial Black,sans-serif' font-weight='900'>中</text></svg>">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --red:#b8272c; --red-deep:#8b1d22;
+    --gold:#d4a017; --gold-soft:#e9c75a;
+    --ink:#1d1916; --paper:#fbf6ec; --paper-2:#f3eadb;
+    --line:#d8c9aa; --muted:#6b6258;
+    --green:#2f7a3d; --blue:#2c5985;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(184,39,44,.15)}
+  html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+  body{padding-bottom:env(safe-area-inset-bottom)}
+  a{color:var(--red);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- Hero ---------- */
+  header.hero{
+    position:relative;
+    background:linear-gradient(135deg,#8b1d22 0%, #b8272c 50%, #d4a017 100%);
+    color:#fff; padding:50px 24px 60px; text-align:center; overflow:hidden;
+  }
+  header.hero::before{
+    content:""; position:absolute; inset:0;
+    background-image:radial-gradient(circle at 20% 30%, rgba(255,255,255,.08) 0 1px, transparent 1px),
+                     radial-gradient(circle at 80% 70%, rgba(255,255,255,.08) 0 1px, transparent 1px);
+    background-size:30px 30px; opacity:.6;
+  }
+  header.hero h1{font-size:clamp(26px,5vw,52px);font-weight:700;margin:0 0 6px;letter-spacing:-.02em;position:relative}
+  header.hero .sub{font-size:clamp(14px,2vw,20px);opacity:.95;position:relative;font-weight:300}
+  header.hero .countdown{
+    display:inline-block;background:rgba(0,0,0,.25);
+    padding:6px 14px;border-radius:999px;font-size:13px;
+    margin-top:14px;position:relative;font-weight:500;
+  }
+  header.hero .chip-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:18px;position:relative}
+  header.hero .chip{background:rgba(255,255,255,.18);padding:5px 12px;border-radius:999px;font-size:12px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25)}
+
+  /* ---------- Nav ---------- */
+  nav.tabs{
+    position:sticky;top:0;z-index:50;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    display:flex;justify-content:center;gap:2px;
+    padding:6px; box-shadow:0 1px 8px rgba(0,0,0,.05);
+    flex-wrap:wrap;
+  }
+  nav.tabs button{
+    background:transparent;border:none;
+    padding:12px 16px; font-size:14px;font-weight:500;
+    color:var(--ink);cursor:pointer; border-radius:6px;
+    transition:.15s; min-height:44px; white-space:nowrap;
+  }
+  nav.tabs button:hover{background:var(--paper-2)}
+  nav.tabs button.active{background:var(--red);color:#fff}
+
+  /* ---------- Sections ---------- */
+  section{display:none;padding:28px 18px;max-width:1200px;margin:0 auto}
+  section.active{display:block}
+  h2.section-title{font-size:26px;font-weight:700;margin:0 0 6px;border-left:4px solid var(--red);padding-left:12px}
+  .section-intro{color:var(--muted);font-size:15px;margin-bottom:22px;max-width:720px}
+
+  /* ---------- Map ---------- */
+  #map{height:520px;width:100%;border-radius:12px;border:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+  .map-legend{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;background:#fff;padding:12px;border-radius:10px;border:1px solid var(--line)}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+  .legend-dot{width:14px;height:14px;border-radius:50%;background:var(--red);border:2px solid #fff;box-shadow:0 0 0 1px var(--red)}
+  .legend-line{width:24px;height:3px;background:var(--gold)}
+  .leaflet-popup-content{margin:10px 14px;font-size:13px}
+  .leaflet-popup-content b{color:var(--red);font-size:14px}
+
+  /* ---------- Day cards ---------- */
+  .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .day-card{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:16px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;
+  }
+  .day-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.10);border-color:var(--red)}
+  .day-card .num{position:absolute;top:0;right:0;background:var(--red);color:#fff;padding:4px 12px;border-bottom-left-radius:10px;font-size:11px;font-weight:600;letter-spacing:.05em}
+  .day-card .date{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .day-card .city{font-size:18px;font-weight:700;margin-bottom:4px;color:var(--red-deep)}
+  .day-card .title-line{font-size:13px;font-weight:600;color:#333;margin-bottom:6px}
+  .day-card .summary{font-size:13px;color:#444;margin-bottom:10px}
+  .day-card .badges{display:flex;flex-wrap:wrap;gap:4px}
+  .badge{font-size:11px;padding:3px 8px;border-radius:6px;background:var(--paper-2);color:var(--ink);border:1px solid var(--line)}
+  .badge.travel{background:#ffe9c2;border-color:#e8c270}
+
+  /* ---------- Modal ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;animation:fade .2s}
+  .modal-bg.show{display:flex}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:var(--paper);border-radius:14px;
+    max-width:780px;width:100%;max-height:92vh;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    position:relative;box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .modal-head{
+    background:linear-gradient(135deg,var(--red-deep),var(--red));
+    color:#fff;padding:22px 26px;border-radius:14px 14px 0 0;
+    position:sticky;top:0;z-index:2;
+  }
+  .modal-head .day-num{font-size:11px;letter-spacing:.1em;opacity:.85}
+  .modal-head h3{margin:4px 0 2px;font-size:22px}
+  .modal-head .modal-date{font-size:13px;opacity:.9}
+  .modal-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.22);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;line-height:1}
+  .modal-close:hover{background:rgba(255,255,255,.35)}
+  .modal-body{padding:22px 26px}
+  .transfer-bar{background:#fff5e1;border:1px solid #e9c75a;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}
+  .accom-bar{background:var(--paper-2);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:18px;border-left:3px solid var(--gold)}
+  .accom-bar a{font-weight:600}
+  .place{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;overflow:hidden}
+  .place-photo{
+    width:calc(100% + 28px);margin:-14px -14px 12px;
+    height:180px;background:linear-gradient(135deg,var(--red-deep),var(--gold));
+    background-size:cover;background-position:center;
+    position:relative;
+  }
+  .place-photo .credit{
+    position:absolute;bottom:4px;right:6px;
+    background:rgba(0,0,0,.5);color:#fff;
+    font-size:10px;padding:2px 6px;border-radius:3px;
+  }
+  .place h4{margin:0 0 6px;color:var(--red-deep);font-size:16px;display:flex;align-items:center;gap:8px}
+  .place .icon{background:var(--red);color:#fff;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+  .place p{margin:0 0 10px;font-size:14px;color:#333}
+  .history-btn{background:var(--gold);color:var(--ink);border:none;padding:10px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;min-height:40px}
+  .history-btn:hover{background:var(--gold-soft)}
+  .history-panel{margin-top:10px;display:none;background:linear-gradient(135deg,#fff8e6,#fdebc6);border-left:3px solid var(--gold);padding:14px;border-radius:0 8px 8px 0;font-size:13.5px;animation:fade .25s}
+  .history-panel.show{display:block}
+  .history-panel h5{margin:0 0 6px;color:var(--red-deep);font-size:14px}
+  .history-panel p{margin:0 0 8px}
+  .history-panel p:last-child{margin-bottom:0}
+
+  /* ---------- Eat tab ---------- */
+  .city-block{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    margin-bottom:18px;overflow:hidden;
+  }
+  .city-block-head{
+    background:linear-gradient(135deg,var(--red-deep),var(--red));
+    color:#fff;padding:14px 18px;
+  }
+  .city-block-head h3{margin:0;font-size:18px}
+  .city-block-head .days-here{font-size:12px;opacity:.85}
+  .city-block-body{padding:16px 18px}
+  .must-try{background:#fff5e1;border:1px solid #e9c75a;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13.5px}
+  .must-try b{color:var(--red-deep)}
+  .cuisine-row{margin-bottom:12px}
+  .cuisine-row h4{margin:0 0 6px;font-size:14px;color:var(--blue);display:flex;align-items:center;gap:6px}
+  .cuisine-row h4 .em{font-size:16px}
+  .restaurant{
+    font-size:13px;padding:6px 10px;background:var(--paper-2);
+    border-radius:6px;margin-bottom:4px;
+  }
+  .restaurant b{color:var(--ink)}
+  .restaurant .note{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+  .heads-up{
+    background:#e7f5ea;border-left:3px solid var(--green);
+    padding:10px 14px;border-radius:0 8px 8px 0;font-size:13px;margin-top:10px;
+  }
+
+  /* ---------- Prep tab ---------- */
+  .prep-progress{
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;margin-bottom:18px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .prep-progress .bar-wrap{flex:1;height:10px;background:var(--paper-2);border-radius:6px;overflow:hidden}
+  .prep-progress .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--red));width:0%;transition:.4s}
+  .prep-progress .pct{font-size:14px;font-weight:600;color:var(--red-deep);min-width:54px;text-align:right}
+
+  .checklist-cat{
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    margin-bottom:14px;overflow:hidden;
+  }
+  .checklist-cat-head{
+    background:var(--paper-2);padding:12px 16px;
+    display:flex;justify-content:space-between;align-items:center;
+    cursor:pointer;
+  }
+  .checklist-cat-head h3{margin:0;font-size:15px;color:var(--red-deep)}
+  .checklist-cat-head .arrow{font-size:14px;color:var(--muted);transition:.2s}
+  .checklist-cat.open .arrow{transform:rotate(90deg)}
+  .checklist-cat-body{padding:8px 16px 14px;display:none}
+  .checklist-cat.open .checklist-cat-body{display:block}
+  .check-item{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:10px 0;border-bottom:1px dashed var(--line);
+    font-size:14px;cursor:pointer;
+  }
+  .check-item:last-child{border-bottom:none}
+  .check-item input[type=checkbox]{
+    width:20px;height:20px;margin-top:2px;flex-shrink:0;
+    accent-color:var(--red);cursor:pointer;
+  }
+  .check-item .text{flex:1}
+  .check-item.done .text{text-decoration:line-through;color:var(--muted)}
+  .check-item .text small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .reset-btn{
+    background:transparent;color:var(--muted);
+    border:1px solid var(--line);padding:8px 14px;
+    border-radius:6px;font-size:13px;cursor:pointer;margin-top:8px;
+  }
+
+  /* ---------- Trip Info ---------- */
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .info-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}
+  .info-card h3{margin:0 0 10px;color:var(--red-deep);font-size:16px}
+  .info-card p,.info-card li{font-size:14px;color:#333}
+  .info-card ul{padding-left:18px;margin:0}
+  .flight-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px;gap:12px}
+  .flight-row:last-child{border-bottom:none}
+  .flight-row .code{font-weight:600;color:var(--red);text-align:right}
+
+  /* Currency widget */
+  .cx-widget{
+    background:linear-gradient(135deg,#fff8e6,#fdebc6);
+    border:1px solid var(--gold);border-radius:8px;
+    padding:12px;margin-top:8px;
+  }
+  .cx-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .cx-row label{font-size:12px;color:var(--muted);min-width:50px}
+  .cx-row input{
+    flex:1;padding:8px 10px;border:1px solid var(--line);
+    border-radius:6px;font-size:15px;font-family:inherit;
+    text-align:right;background:#fff;
+  }
+  .cx-rate{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* Calendar export */
+  .ics-btn{
+    background:var(--red);color:#fff;border:none;
+    padding:12px 18px;border-radius:8px;font-size:14px;font-weight:600;
+    cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    margin-top:8px;width:100%;justify-content:center;min-height:46px;
+  }
+  .ics-btn:hover{background:var(--red-deep)}
+
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:24px;border-top:1px solid var(--line);margin-top:40px}
+  .install-hint{
+    background:linear-gradient(135deg,#fff8e6,#fdebc6);
+    border:1px solid var(--gold);border-radius:10px;
+    padding:14px;margin:14px auto;max-width:600px;
+    font-size:13px;color:var(--ink);
+  }
+  .install-hint b{color:var(--red-deep)}
+  .install-hint .x{float:right;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;margin-left:8px}
+
+  @media (max-width:640px){
+    header.hero{padding:36px 14px 44px}
+    section{padding:18px 12px}
+    .modal-head{padding:18px 18px}
+    .modal-body{padding:16px 18px}
+    .place{padding:12px}
+    .place-photo{width:calc(100% + 24px);margin:-12px -12px 12px;height:160px}
+    #map{height:420px}
+    .day-grid{grid-template-columns:1fr}
+    nav.tabs button{padding:10px 12px;font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>The Sheth Family China Adventure</h1>
+  <div class="sub">An 18-day journey through 7 cities · May 23 – June 9, 2026</div>
+  <div class="countdown" id="countdown">Loading…</div>
+  <div class="chip-row">
+    <span class="chip">Tarang</span><span class="chip">Dipali</span><span class="chip">Urmi</span><span class="chip">Saahil</span>
+  </div>
+  <div class="chip-row" style="margin-top:8px">
+    <span class="chip">Shanghai</span><span class="chip">Hangzhou</span><span class="chip">Yangshuo</span><span class="chip">Xi'an</span><span class="chip">Luoyang</span><span class="chip">Beijing</span><span class="chip">Zhangjiajie</span>
+  </div>
+</header>
+
+<div class="install-hint" id="install-hint">
+  <span class="x" onclick="document.getElementById('install-hint').style.display='none'">×</span>
+  <b>📱 iPhone tip:</b> Tap the Safari Share button → "Add to Home Screen" to install this as an app icon. Works offline once installed.
+</div>
+
+<nav class="tabs">
+  <button class="active" data-tab="map">🗺 Map</button>
+  <button data-tab="itinerary">📅 Day-by-Day</button>
+  <button data-tab="eat">🥢 Eat</button>
+  <button data-tab="prep">✈️ Prep</button>
+  <button data-tab="info">ℹ️ Info</button>
+</nav>
+
+<!-- ============== MAP ============== -->
+<section id="map-section" class="active">
+  <h2 class="section-title">Route Map</h2>
+  <p class="section-intro">Tap any city pin to see what we're doing there. The gold path follows our travel order — Shanghai → Hangzhou (day trip) → Yangshuo → Xi'an → Luoyang → Beijing → Zhangjiajie → back to Shanghai.</p>
+  <div id="map"></div>
+  <div class="map-legend">
+    <div class="legend-item"><span class="legend-dot"></span> City stop</div>
+    <div class="legend-item"><span class="legend-line"></span> Travel order</div>
+    <div class="legend-item">Tap a pin for details.</div>
+  </div>
+</section>
+
+<!-- ============== ITINERARY ============== -->
+<section id="itinerary-section">
+  <h2 class="section-title">Day-by-Day Itinerary</h2>
+  <p class="section-intro">Tap any day to see places, photos, hotel directions, and historical context. The gold "Learn the History" buttons unlock the story behind each site.</p>
+  <div class="day-grid" id="day-grid"></div>
+</section>
+
+<!-- ============== EAT ============== -->
+<section id="eat-section">
+  <h2 class="section-title">Vegetarian Eats by City</h2>
+  <p class="section-intro">Hand-picked vegetarian-friendly restaurants across Chinese, Indian, Italian, Thai, and Middle Eastern cuisines for every city we'll visit. Big-city stops have lots of options; smaller towns (Yangshuo, Luoyang, Zhangjiajie) lean local. <b>Always verify on Google Maps / TripAdvisor / HappyCow before going</b> — restaurants in China change quickly.</p>
+  <div class="heads-up" style="margin-bottom:18px">
+    🌱 <b>Helpful Mandarin:</b> "Wǒ chī sù" (我吃素) = "I'm vegetarian." "Bù yào ròu" (不要肉) = "No meat." "Bù yào yú" (不要鱼) = "No fish." <br>Tip: in mainland China, "vegetarian" sometimes means no red meat — be specific. Buddhist (素食 sùshí) restaurants are 100% safe.
+  </div>
+  <div id="eat-grid"></div>
+</section>
+
+<!-- ============== PREP ============== -->
+<section id="prep-section">
+  <h2 class="section-title">Pre-Trip Checklist</h2>
+  <p class="section-intro">20 days to go. Tap to check things off — your progress saves on this device. Items marked <b>"Verify"</b> assume you've already done them; double-check nothing slipped through.</p>
+  <div class="prep-progress">
+    <div class="bar-wrap"><div class="bar-fill" id="bar-fill"></div></div>
+    <div class="pct" id="pct">0%</div>
+  </div>
+  <div id="checklist"></div>
+  <button class="reset-btn" onclick="if(confirm('Reset all checkboxes?')){localStorage.removeItem('china-checks');location.reload()}">↻ Reset checklist</button>
+</section>
+
+<!-- ============== TRIP INFO ============== -->
+<section id="info-section">
+  <h2 class="section-title">Trip Information</h2>
+  <p class="section-intro">Flights, hotels, currency, and one-tap calendar export.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📅 Add to iPhone Calendar</h3>
+      <p style="font-size:13px;color:var(--muted)">Tap the button to download an .ics file. On iPhone, opening it offers to add all 18 days to your Calendar app — including hotels, transfers, and flight times.</p>
+      <button class="ics-btn" onclick="downloadICS()">⬇️ Download Trip Calendar (.ics)</button>
+    </div>
+
+    <div class="info-card">
+      <h3>💱 Currency (CAD ↔ RMB)</h3>
+      <div class="cx-widget">
+        <div class="cx-row"><label>CAD $</label><input type="number" id="cad-input" value="100" oninput="convert('cad')"></div>
+        <div class="cx-row"><label>RMB ¥</label><input type="number" id="rmb-input" value="" oninput="convert('rmb')"></div>
+        <div class="cx-rate" id="rate-note">≈ 1 CAD = 5.20 RMB (verify before trip)</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>✈️ International Flights</h3>
+      <div class="flight-row"><div><b>Arrival</b> · May 23<br><span style="color:#666;font-size:12px">→ Shanghai</span></div><div class="code">CX316<br><span style="font-weight:400;color:#666">08:10–11:05</span></div></div>
+      <div class="flight-row"><div><b>Departure</b> · Jun 9<br><span style="color:#666;font-size:12px">Shanghai →</span></div><div class="code">CX381<br><span style="font-weight:400;color:#666">19:05–21:50</span></div></div>
+    </div>
+
+    <div class="info-card">
+      <h3>🚄 Domestic Travel (booked)</h3>
+      <ul>
+        <li>Train: Shanghai ↔ Hangzhou (Day 3)</li>
+        <li>Flight FM9367: Shanghai → Guilin (Day 4)</li>
+        <li>Flight MU2308: Guilin → Xi'an (Day 7)</li>
+        <li>Train G854: Xi'an → Luoyang (Day 9)</li>
+        <li>Train G808: Luoyang → Beijing (Day 10)</li>
+        <li>Flight CA8609: Beijing → Zhangjiajie (Day 14)</li>
+        <li>Flight FM9344: Zhangjiajie → Shanghai (Day 16)</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>🏨 Hotels (tap to open Maps)</h3>
+      <ul id="hotel-list"></ul>
+    </div>
+
+    <div class="info-card">
+      <h3>📞 Tour Contact</h3>
+      <p><b>Travel Consultant:</b> Leo Li<br>
+      <b>Cell:</b> <a href="tel:+8613320961115">+86 13320961115</a><br>
+      <b>Office:</b> +86-28-85223685<br>
+      <b>Email:</b> <a href="mailto:leo@chinadiscovery.com">leo@chinadiscovery.com</a><br>
+      <b>Booking ID:</b> CD-Le-151705-Tarang-260523</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== MODAL ============== -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div class="modal-head">
+      <div class="day-num" id="m-num"></div>
+      <h3 id="m-title"></h3>
+      <div class="modal-date" id="m-date"></div>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<footer>
+  Crafted for the Sheth family · Itinerary by China Discovery (Booking CD-Le-151705) · 安全旅行 ✦ Safe travels!
+</footer>
+
+<script>
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+function updateCountdown(){
+  const start = new Date("2026-05-23T00:00:00");
+  const today = new Date();
+  const days = Math.ceil((start - today)/(1000*60*60*24));
+  const el = document.getElementById("countdown");
+  if(days > 1) el.textContent = `🛫 ${days} days until takeoff!`;
+  else if(days === 1) el.textContent = `🛫 1 day to go!`;
+  else if(days === 0) el.textContent = `🛫 Today's the day!`;
+  else if(days >= -17) el.textContent = `📍 Day ${18+days} of 18 — currently on trip`;
+  else el.textContent = `🏠 Welcome home`;
+}
+updateCountdown();
+
+/* =========================================================
+   TRIP DATA
+========================================================= */
+const cities = {
+  Shanghai:  {coord:[31.2304,121.4737], dynasty:"Modern megacity / Treaty port history"},
+  Hangzhou:  {coord:[30.2741,120.1551], dynasty:"Southern Song capital"},
+  Yangshuo:  {coord:[24.7783,110.4972], dynasty:"Karst landscape · Guilin region"},
+  "Xi'an":   {coord:[34.3416,108.9398], dynasty:"Ancient capital of 13 dynasties"},
+  Luoyang:   {coord:[34.6197,112.4540], dynasty:"Capital of 13 dynasties"},
+  Beijing:   {coord:[39.9042,116.4074], dynasty:"Ming · Qing · Modern capital"},
+  Zhangjiajie:{coord:[29.1170,110.4790], dynasty:"UNESCO sandstone forest"},
+};
+
+/* Hotels with addresses for Apple Maps */
+const hotels = {
+  "IFC Residence": {addr:"IFC Residence, 8 Century Avenue, Pudong, Shanghai", days:"Days 1–4"},
+  "Banyan Tree Yangshuo": {addr:"Banyan Tree Yangshuo, Yangshuo, Guilin, Guangxi", days:"Days 4–7"},
+  "Fairway Place Xi'an — Marriott Executive Apartments": {addr:"Fairway Place Marriott Executive Apartments, Xi'an, Shaanxi", days:"Days 7–9"},
+  "Marriott Luoyang": {addr:"Marriott Luoyang, 318 Heluo Road, Luolong District, Luoyang", days:"Day 9"},
+  "China World Summit Wing": {addr:"China World Summit Wing, 1 Jianguomenwai Avenue, Chaoyang, Beijing", days:"Days 10–14"},
+  "Hampton by Hilton Wulingyuan": {addr:"Hampton by Hilton Wulingyuan, Zhangjiajie, Hunan", days:"Days 14–16"},
+  "St. Regis Shanghai Bund": {addr:"St. Regis Shanghai Bund, 18 Henan South Road, Huangpu, Shanghai", days:"Days 16–18"},
+};
+
+/* Wikipedia page titles for photo lookup (REST API) */
+const photoLookup = {
+  "Yu Garden":"Yu_Garden",
+  "Shanghai Tower (118th floor)":"Shanghai_Tower",
+  "The Bund":"The_Bund",
+  "Nanjing Road":"Nanjing_Road",
+  "Yuyuan Bazaar":"Yu_Garden",
+  "Feilai Peak (Peak Flying from Afar)":"Feilai_Peak",
+  "Lingyin Temple":"Lingyin_Temple",
+  "Enduring Memories of Hangzhou":"West_Lake",
+  "Yulong River Bamboo Raft":"Yangshuo_County",
+  "Ten Mile Gallery":"Yangshuo_County",
+  "Impression Liu Sanjie":"Impression_Sanjie_Liu",
+  "Fuli Ancient Town":"Yangshuo_County",
+  "Muslim Quarter":"Muslim_Quarter,_Xi%27an",
+  "Grand Tang Dynasty Ever Bright City":"Tang_dynasty",
+  "Terracotta Warriors and Horses":"Terracotta_Army",
+  "Shaanxi History Museum":"Shaanxi_History_Museum",
+  "Da Cien Temple & Giant Wild Goose Pagoda":"Giant_Wild_Goose_Pagoda",
+  "Luoyang Museum":"Luoyang",
+  "Longmen Grottoes":"Longmen_Grottoes",
+  "Tiananmen Square":"Tiananmen_Square",
+  "Forbidden City (Palace Museum)":"Forbidden_City",
+  "Lama Temple (Yonghe Temple)":"Yonghe_Temple",
+  "Mutianyu Great Wall":"Mutianyu",
+  "Temple of Heaven":"Temple_of_Heaven",
+  "Summer Palace":"Summer_Palace",
+  "Bailong Elevator":"Bailong_Elevator",
+  "Yuanjiajie":"Zhangjiajie_National_Forest_Park",
+  "Tianzi Mountain":"Tianzi_Mountain",
+  "Zhangjiajie Glass Bridge":"Zhangjiajie_Glass_Bridge",
+  "Tianmen Mountain & Cableway":"Tianmen_Mountain",
+  "Tianmen Cave & Stairway to Heaven":"Tianmen_Mountain",
+  "Shanghai Museum East":"Shanghai_Museum",
+  "Fuxing Park":"Fuxing_Park",
+  "Huangpu River Night Cruise":"Huangpu_River",
+  "Former French Concession Walking Tour":"Shanghai_French_Concession",
+};
+
+/* Itinerary */
+const itinerary = [
+  {day:1, date:"Sat · May 23, 2026", city:"Shanghai", title:"Arrival in the Magic City",
+   summary:"Land at Shanghai airport. Met by guide, transferred to IFC Residence. Rest day.",
+   transfer:"Flight CX316 (08:10–11:05) — arranged by you",
+   hotel:"IFC Residence",
+   places:[
+     {name:"Welcome to Shanghai", desc:"Your guide meets you at the arrival hall. Private transfer to your downtown hotel. Afternoon to relax and shake off jet lag."}
+   ]},
+
+  {day:2, date:"Sun · May 24, 2026", city:"Shanghai", title:"Old & New Shanghai",
+   summary:"Yu Garden, Yuyuan Bazaar, Shanghai Tower, Nanjing Road, the Bund.",
+   hotel:"IFC Residence",
+   places:[
+     {name:"Yu Garden", desc:"A classical Jiangnan-style garden — pavilions, koi pools, ancient pines. One of southern China's finest examples of Ming-era garden design.",
+      history:{title:"Yu Garden — built for a son's filial love",
+      text:"Yu Garden was begun in <b>1559</b> by Pan Yunduan, a Ming-dynasty official, as a quiet retirement garden for his elderly father (the name 'Yu' means 'pleasing'). It took nearly 20 years to complete. The garden was looted during the Opium Wars in the 1840s and again during the Taiping Rebellion in the 1850s, but was painstakingly restored. It survived the 20th century intact and is now one of the best-preserved classical Chinese gardens in the country."}},
+     {name:"Yuyuan Bazaar", desc:"Adjacent traditional shopping street with snacks, handicrafts, and the famous Nanxiang xiaolongbao restaurant (they have vegetarian dumplings too — ask for sùshí 素食)."},
+     {name:"Shanghai Tower (118th floor)", desc:"Ride one of the world's fastest elevators to 546 m for a 360° view of Pudong, the Bund, and the Huangpu River.",
+      history:{title:"Shanghai Tower — China's tallest building",
+      text:"Completed in <b>2015</b>, the Shanghai Tower stands 632 m tall — the tallest building in China and (currently) the third tallest in the world. Its twisting form isn't just for looks: the 120° spiral cuts wind loads by 24%, saving roughly $58 million in steel. It sits in Pudong, which in 1990 was still farmland and warehouses. The fact you can see central Shanghai from up here at all is the story of the fastest urban transformation in modern history."}},
+     {name:"Nanjing Road", desc:"Shanghai's premier shopping street since the 19th century. Pedestrian-friendly, neon-lit at night."},
+     {name:"The Bund", desc:"Promenade lined with 52 European-style buildings facing the Pudong skyline across the Huangpu River. The classic Shanghai postcard view.",
+      history:{title:"The Bund — when Shanghai was the world's playground",
+      text:"After the First Opium War ended in <b>1842</b>, Shanghai was forced open to foreign trade. Britain, France, the US and others claimed riverfront 'concessions' here and built grand banks, customs houses, and trading firms — the buildings you see today, mostly dating from <b>1900–1937</b>. By the 1930s Shanghai was the most cosmopolitan city in Asia, nicknamed 'the Paris of the East.' The party ended with the Japanese invasion in 1937 and the Communist takeover in 1949. The Bund stood quiet for decades. The Pudong skyscrapers across the river are all younger than 1995 — that nighttime contrast is essentially 'old empire' vs. 'new China' staring at each other across the water."}}
+   ]},
+
+  {day:3, date:"Mon · May 25, 2026", city:"Hangzhou (day trip)", title:"West Lake & Lingyin Temple",
+   summary:"High-speed train to Hangzhou. Feilai Peak carvings, Lingyin Temple, evening light show.",
+   transfer:"G221 (09:00–09:45) out · G1638 (21:45–22:40) back",
+   hotel:"IFC Residence",
+   places:[
+     {name:"Feilai Peak (Peak Flying from Afar)", desc:"Limestone hill covered with over 300 Buddhist carvings dating back over 1,000 years.",
+      history:{title:"The peak that 'flew' from India",
+      text:"Legend has it that an Indian monk named Huili arrived here in <b>326 AD</b>, recognized this peak as one that had mysteriously flown over from India, and founded Lingyin Temple in front of it. The carvings — 338 of them dating from the <b>10th to 14th centuries</b> — are some of the finest Buddhist sculpture surviving in southern China, including a famous laughing Maitreya Buddha that's become one of the most photographed Buddhist images in the country."}},
+     {name:"Lingyin Temple", desc:"Nearly 1,700 years old — one of the oldest and largest Buddhist temples in China. The on-site vegetarian restaurant is renowned (a great lunch stop!).",
+      history:{title:"Lingyin — 'Temple of the Soul's Retreat'",
+      text:"Founded in <b>326 AD</b> during the Eastern Jin dynasty. At its peak in the <b>10th century</b> it housed over 3,000 monks across 18 pavilions and 75 halls. It was destroyed and rebuilt at least 16 times across history — most recently after damage during the Cultural Revolution (1966–76), when Premier Zhou Enlai personally ordered it protected. The 24.8 m Sakyamuni statue inside the Great Hall is carved from 24 blocks of camphor wood and is the largest seated wooden Buddha in China."}},
+     {name:"Enduring Memories of Hangzhou", desc:"Outdoor live show on West Lake itself, directed by Zhang Yimou. Music, dance, and floating performers on the water.",
+      history:{title:"West Lake — the lake every Chinese poet wrote about",
+      text:"West Lake has been celebrated in Chinese poetry and painting for over <b>1,200 years</b>. Tang and Song dynasty poets like Bai Juyi and Su Shi (Su Dongpo) actually served as governors of Hangzhou and built the causeways still named after them. Marco Polo, visiting in the 1290s, called Hangzhou 'beyond dispute the finest and noblest city in the world.' UNESCO listed it as a World Heritage site in 2011 — not for one monument but for the entire cultural landscape, an idea of beauty that influenced Asian garden and landscape design for a millennium."}}
+   ]},
+
+  {day:4, date:"Tue · May 26, 2026", city:"Yangshuo", title:"Fly to Karst Country",
+   summary:"Morning free in Shanghai. Afternoon flight to Guilin, drive to Yangshuo.",
+   transfer:"Flight FM9367 (11:10–13:40)",
+   hotel:"Banyan Tree Yangshuo",
+   places:[
+     {name:"Travel day", desc:"Free morning in Shanghai before flying south to Guilin. Met by your Yangshuo guide and driven to the Banyan Tree resort, set among the karst peaks."}
+   ]},
+
+  {day:5, date:"Wed · May 27, 2026", city:"Yangshuo", title:"River, Hills & a Show on the Water",
+   summary:"Yulong River bamboo raft, Ten Mile Gallery, evening 'Impression Liu Sanjie' show.",
+   hotel:"Banyan Tree Yangshuo",
+   places:[
+     {name:"Yulong River Bamboo Raft", desc:"Drift down the gentle Yulong on a non-motorized bamboo raft, punted along by a gondolier past rice paddies and centuries-old stone bridges."},
+     {name:"Ten Mile Gallery", desc:"Scenic riverside route past Moon Hill and a parade of karst peaks. Explore by car or on foot.",
+      history:{title:"How karst landscapes form",
+      text:"The towers and peaks around Yangshuo are <b>karst</b> — limestone laid down on a shallow tropical sea floor over <b>300 million years ago</b>, then lifted up and slowly dissolved by mildly acidic rainwater over millions of years. What's left are isolated 'tower karst' pillars (the dramatic vertical-sided peaks) and 'cone karst' (the more rounded ones). This is the densest concentration of tower karst on Earth. The landscape has shaped Chinese ink-painting for over a thousand years — what looks 'stylized' in classical Chinese landscape art is actually quite literal here."}},
+     {name:"Impression Liu Sanjie", desc:"Open-air theatrical performance directed by Zhang Yimou using the Li River as the stage and 12 karst peaks as the backdrop. 600+ performers.",
+      history:{title:"Who was Liu Sanjie?",
+      text:"Liu Sanjie ('Third Sister Liu') is a legendary <b>Zhuang ethnic-minority</b> folk heroine — a peasant girl famous for her ability to defeat oppressive landlords through singing. The story is centuries old in southern China. Zhang Yimou's show, which premiered in <b>2004</b>, was the world's first large-scale outdoor 'real scenery' theatrical production and launched a whole genre."}}
+   ]},
+
+  {day:6, date:"Thu · May 28, 2026", city:"Yangshuo", title:"Slow Day in Fuli",
+   summary:"Morning visit to Fuli Ancient Town. Rest of the day is yours.",
+   hotel:"Banyan Tree Yangshuo",
+   places:[
+     {name:"Fuli Ancient Town", desc:"Quiet riverside town famous for traditional Chinese painting and hand-made paper fans. Far less touristy than West Street."},
+     {name:"Free time", desc:"Use the afternoon for the resort, biking, a Li River cruise, cooking class, or simply lounging by the karst peaks."}
+   ]},
+
+  {day:7, date:"Fri · May 29, 2026", city:"Xi'an", title:"Fly to the Ancient Capital",
+   summary:"Free morning, then fly to Xi'an. Muslim Quarter and Tang-era light show in the evening.",
+   transfer:"Flight MU2308 (11:50–13:50)",
+   hotel:"Fairway Place Xi'an — Marriott Executive Apartments",
+   places:[
+     {name:"Muslim Quarter", desc:"Bustling lanes inside the old Xi'an city walls — butchers, sesame oil mills, and food stalls run by the Hui Muslim community. Lots of vegetarian-friendly options: persimmon cakes (shìzi bǐng), peanut candy, sesame buns, jīnggāo, and biangbiang noodles can be made meat-free.",
+      history:{title:"China's 1,300-year-old Muslim community",
+      text:"During the <b>Tang dynasty (618–907)</b>, Xi'an (then called Chang'an) was the eastern terminus of the Silk Road and the largest city on Earth — over <b>1 million people</b>. Arab and Persian merchants settled here permanently and married locally; their descendants are the <b>Hui</b>, an officially recognized ethnic group of around 11 million Chinese Muslims today. The Great Mosque of Xi'an, founded in 742 AD, is one of the oldest in China — and architecturally it looks like a Chinese temple, not a Middle Eastern mosque, because that's how the community built it."}},
+     {name:"Grand Tang Dynasty Ever Bright City", desc:"A 1.5 km pedestrian mall built to evoke the glory of Tang-era Chang'an, with elaborate light installations and costumed performers."}
+   ]},
+
+  {day:8, date:"Sat · May 30, 2026", city:"Xi'an", title:"The Terracotta Army",
+   summary:"Morning at the Terracotta Warriors (40 km out). Afternoon at the Shaanxi History Museum.",
+   hotel:"Fairway Place Xi'an — Marriott Executive Apartments",
+   places:[
+     {name:"Terracotta Warriors and Horses", desc:"8,000+ life-sized clay warriors, horses, and chariots arranged in three pits — one of the greatest archaeological discoveries of the 20th century.",
+      history:{title:"Built for the afterlife of China's first emperor",
+      text:"<b>Qin Shi Huang</b> unified China in <b>221 BC</b>, became its first emperor, and immediately began constructing his tomb — a project that would employ <b>700,000 workers over 38 years</b>. The terracotta army was meant to protect him in the afterlife. Each warrior has a unique face (probably modeled on real soldiers), was originally painted in vivid colors, and held a real bronze weapon. The whole army was lost to history for over 2,000 years until <b>March 1974</b>, when local farmers digging a well struck a clay head. Qin Shi Huang's actual burial mound, just nearby, has never been excavated — historical records say it contains rivers of mercury simulating China's waterways, and modern soil tests have confirmed unusually high mercury levels."}},
+     {name:"Shaanxi History Museum", desc:"China's first large modern national museum (opened 1991). Over a million artifacts spanning more than a million years.",
+      history:{title:"Why Shaanxi has so much",
+      text:"Shaanxi was the heartland of <b>13 Chinese dynasties</b> over more than 1,000 years — Western Zhou, Qin, Western Han, Sui, Tang and others all had their capitals here. Every time a new dynasty rose, the previous court left behind palaces, tombs, and treasures. The result is that Shaanxi province alone holds an enormous share of China's most important early artifacts — bronze ritual vessels, Tang gold and silver, painted terracotta. This museum is essentially the highlight reel."}}
+   ]},
+
+  {day:9, date:"Sun · May 31, 2026", city:"Xi'an → Luoyang", title:"Pagoda, then High-Speed East",
+   summary:"Da Cien Temple & Giant Wild Goose Pagoda in the morning. Train to Luoyang, then Luoyang Museum.",
+   transfer:"High-speed train G854 (14:19–15:47)",
+   hotel:"Marriott Luoyang",
+   places:[
+     {name:"Da Cien Temple & Giant Wild Goose Pagoda", desc:"A 64.5 m brick pagoda, built to house Buddhist scriptures brought back from India. (Optional 30 RMB to climb it.)",
+      history:{title:"Xuanzang — the real Monkey King's master",
+      text:"In <b>629 AD</b>, the Tang-dynasty monk <b>Xuanzang</b> set out alone, against an imperial travel ban, on a 17-year overland journey to India to retrieve original Buddhist scriptures. He returned in <b>645 AD</b> with 657 sutras, which he spent the rest of his life translating. The Giant Wild Goose Pagoda was built in <b>652 AD</b> specifically to store them. Xuanzang's epic journey became the inspiration for one of the four classic Chinese novels, <i>Journey to the West</i> (16th century), in which he's the gentle monk Tang Seng accompanied by the Monkey King Sun Wukong."}},
+     {name:"Luoyang Museum", desc:"Over 1,000 exhibits spanning the 13 dynasties that made Luoyang their capital — from Bronze Age dings to Tang pottery.",
+      history:{title:"Luoyang — capital of capitals",
+      text:"Luoyang was the capital of <b>13 dynasties</b> across more than 1,500 years, from the Eastern Zhou (770 BC) through the Tang. It's where Buddhism first took root in China — the White Horse Temple, founded in <b>68 AD</b>, is the country's first Buddhist temple. By the time of the Northern Wei (5th–6th c.), Luoyang was a city of half a million with massive Buddhist monasteries, foreign merchants, and the workshops that would carve the Longmen Grottoes you'll visit tomorrow."}}
+   ]},
+
+  {day:10, date:"Mon · Jun 1, 2026", city:"Luoyang → Beijing", title:"Longmen Grottoes, then Beijing",
+   summary:"Morning at the Longmen Grottoes (UNESCO). Afternoon high-speed train to Beijing.",
+   transfer:"High-speed train G808 (16:25–19:25)",
+   hotel:"China World Summit Wing",
+   places:[
+     {name:"Longmen Grottoes", desc:"UNESCO site with 100,000+ Buddhist statues carved into limestone cliffs along the Yi River. Highlights: Bingyang Middle Cave, Wanfo Cave (15,000 small Buddhas), and the colossal 17 m Vairocana Buddha at Fengxian Temple.",
+      history:{title:"500 years of carving cliff faces",
+      text:"Carving at Longmen began in <b>493 AD</b>, when the Northern Wei emperor Xiaowen moved his capital from Datong to Luoyang and brought his dynasty's tradition of cliff-carving with him. Work continued for over <b>400 years</b> across the Tang dynasty. The masterpiece is the <b>Vairocana Buddha</b>, completed in <b>675 AD</b> — its serene face is traditionally said to be modeled on Empress Wu Zetian, China's only female emperor, who funded the project. UNESCO inscribed the site in 2000."}}
+   ]},
+
+  {day:11, date:"Tue · Jun 2, 2026", city:"Beijing", title:"The Imperial Heart",
+   summary:"Tiananmen Square, Forbidden City, Lama Temple.",
+   hotel:"China World Summit Wing",
+   places:[
+     {name:"Tiananmen Square", desc:"The world's largest public plaza. Brief visit before walking through the Tiananmen Gate into the Forbidden City.",
+      history:{title:"From Ming gate to Mao's stage",
+      text:"The Tiananmen Gate ('Gate of Heavenly Peace') was originally built in <b>1420</b> as the front gate of the imperial city. The vast plaza in front of it was massively expanded in 1958 to its current 440,000 m² — large enough to hold a million people. It was here, on <b>October 1, 1949</b>, that Mao Zedong proclaimed the founding of the People's Republic. The Mao portrait on the gate has been there since 1949."}},
+     {name:"Forbidden City (Palace Museum)", desc:"The Ming and Qing imperial palace — 980 buildings, ~9,000 rooms across 72 hectares. Home to 24 emperors over nearly 500 years.",
+      history:{title:"Built in 14 years, sealed for 500",
+      text:"Construction took <b>14 years (1406–1420)</b> under the Yongle Emperor of the Ming dynasty, with around <b>1 million laborers and 100,000 craftsmen</b>. From 1420 until <b>1924</b>, when the last Qing emperor Puyi was finally evicted, ordinary Chinese people were forbidden to enter — hence the name. The yellow-glazed roof tiles you see almost everywhere were reserved exclusively for the emperor; using yellow without permission was a capital offense."}},
+     {name:"Lama Temple (Yonghe Temple)", desc:"Beijing's most important Tibetan Buddhist temple, blending Han Chinese and Tibetan architecture. Notable for its 18 m sandalwood Maitreya Buddha, carved from a single tree. <b>King's Joy</b> (Michelin vegetarian) is right next door — perfect for lunch.",
+      history:{title:"From imperial residence to Tibetan monastery",
+      text:"This complex was originally built in <b>1694</b> as the residence of Prince Yong, who became the Yongzheng Emperor in 1722. After Yongzheng's death in 1735, his son Qianlong converted half the complex into a Tibetan Buddhist monastery — partly to make peace with the Mongols and Tibetans, who shared the religion. It's one of the very few imperial sites that survived both the Boxer Rebellion and the Cultural Revolution essentially intact, reportedly because Premier Zhou Enlai personally ordered it protected."}}
+   ]},
+
+  {day:12, date:"Wed · Jun 3, 2026", city:"Beijing", title:"The Great Wall",
+   summary:"Mutianyu section (~70 km / 1.5 hr from Beijing). Cable car up, hike, cable car down.",
+   hotel:"China World Summit Wing",
+   places:[
+     {name:"Mutianyu Great Wall", desc:"A beautifully restored, less-crowded section. Cable car up to Watchtower #14, hike along the wall, optional climb to Watchtower #20 (the highest point), then cable car down.",
+      history:{title:"Built and rebuilt over 2,000 years",
+      text:"The Great Wall isn't one wall — it's a network built and rebuilt over more than <b>2,000 years</b>, starting around <b>700 BC</b> when small kingdoms built defensive walls. <b>Qin Shi Huang</b> (the same first emperor who built the Terracotta Army) connected them around 220 BC. The stone-faced wall most people picture today is mostly <b>Ming dynasty (1368–1644)</b> work — built to keep out the Mongols, who had ruled China during the Yuan dynasty. The total length of all wall sections combined is over <b>21,000 km</b> — about half the circumference of the Earth. Mutianyu was first built in the 6th century and substantially rebuilt in 1569."}}
+   ]},
+
+  {day:13, date:"Thu · Jun 4, 2026", city:"Beijing", title:"Temple of Heaven & Summer Palace",
+   summary:"Morning at Temple of Heaven; afternoon at the Summer Palace.",
+   hotel:"China World Summit Wing",
+   places:[
+     {name:"Temple of Heaven", desc:"Where Ming and Qing emperors performed annual sacrifices to Heaven for good harvests. The locals come here to do tai chi, dance, and play games among the cypress trees.",
+      history:{title:"Acoustics, geometry, and the Son of Heaven",
+      text:"Built in <b>1420</b> by the same Yongle Emperor who built the Forbidden City. The complex's architecture is densely symbolic: Heaven is round (the Hall of Prayer for Good Harvests), Earth is square (the surrounding wall), and the number <b>9</b> (the largest single digit, associated with the emperor) appears everywhere. Twice a year the emperor — the 'Son of Heaven' — would come here to plead for good harvests on behalf of all his people."}},
+     {name:"Summer Palace", desc:"China's largest and best-preserved imperial garden — 290 hectares of lakes, hills, and pavilions on the outskirts of Beijing. Don't miss the 728 m Long Corridor.",
+      history:{title:"Empress Cixi and the navy money",
+      text:"The site was first developed in the 12th century, but the current garden is largely the work of the <b>Qianlong Emperor</b> (1750s) and, infamously, the <b>Empress Dowager Cixi</b>. After Anglo-French troops destroyed the original Summer Palace in 1860, Cixi rebuilt it in the 1880s — and reportedly diverted funds earmarked for modernizing the Chinese navy to do it. The result was a glorious garden and a humiliating defeat by Japan in <b>1894–95</b>. The marble boat by Kunming Lake is the symbol of that misallocation."}}
+   ]},
+
+  {day:14, date:"Fri · Jun 5, 2026", city:"Zhangjiajie", title:"Fly to the Avatar Mountains",
+   summary:"Free morning in Beijing, then fly south to Zhangjiajie, transfer to Wulingyuan.",
+   transfer:"Flight CA8609 (13:40–16:10)",
+   hotel:"Hampton by Hilton Wulingyuan",
+   places:[
+     {name:"Travel day", desc:"Use the morning to wrap up Beijing, then it's wheels-up for Zhangjiajie. Met by your local guide and driven into Wulingyuan, the gateway to the national park."}
+   ]},
+
+  {day:15, date:"Sat · Jun 6, 2026", city:"Zhangjiajie", title:"Yuanjiajie & Tianzi Mountain",
+   summary:"Inside Zhangjiajie National Forest Park — Bailong Elevator, Yuanjiajie peaks, Tianzi Mountain.",
+   hotel:"Hampton by Hilton Wulingyuan",
+   places:[
+     {name:"Bailong Elevator", desc:"The world's tallest outdoor elevator — 326 m straight up the cliff face in 1.5 minutes."},
+     {name:"Yuanjiajie", desc:"Towering sandstone columns shrouded in mist. The 'Avatar Hallelujah Mountains' — yes, they're real and yes, they were the inspiration. Don't miss Ecstasy Terrace and the First Bridge.",
+      history:{title:"How the Avatar mountains formed",
+      text:"These ~3,000 quartz-sandstone pillars are over <b>380 million years old</b> — formed when this area was a shallow sea, lifted up as the Indian Plate collided with Asia, and then sculpted by water and weathering over tens of millions of years. The result is a landscape unlike anywhere else on Earth: vertical pillars 200+ m tall in a dense forest. Zhangjiajie became <b>China's first national forest park</b> in 1982 and a UNESCO site in 1992. James Cameron's team visited in 2008 while designing <i>Avatar</i>, and the floating Hallelujah Mountains were directly modeled on what they saw — the local government later officially renamed one peak 'Avatar Hallelujah Mountain' in 2010."}},
+     {name:"Tianzi Mountain", desc:"More peaks, more viewpoints. Helong Park has the best views of Yubi Peak ('Imperial Pen Peak'). Cable car descent through the pillars."}
+   ]},
+
+  {day:16, date:"Sun · Jun 7, 2026", city:"Zhangjiajie → Shanghai", title:"Glass Bridge & Tianmen Mountain",
+   summary:"Glass Bridge in the morning, Tianmen Mountain (cableway, cliff path, the famous Cave) in the afternoon. Evening flight back to Shanghai.",
+   transfer:"Flight FM9344 (20:35–22:40)",
+   hotel:"St. Regis Shanghai Bund",
+   places:[
+     {name:"Zhangjiajie Glass Bridge", desc:"At 430 m long and 300 m above the canyon, the world's longest and one of the highest glass-bottomed bridges. Not for the faint of heart.",
+      history:{title:"Engineered to scare you (safely)",
+      text:"Designed by Israeli architect Haim Dotan and opened in <b>2016</b>. Despite the unsettling experience, the bridge can hold up to 800 people at once and was tested by smashing it with sledgehammers and driving cars across it. It briefly held the world record for longest glass bridge — a record now broken by other Chinese bridges (China has built dozens of glass bridges since 2016)."}},
+     {name:"Tianmen Mountain & Cableway", desc:"7,455 m cable car ride from downtown Zhangjiajie up to 1,400 m+ — currently the longest cableway of its kind in the world. Watch for Tongtian Avenue ('Avenue toward Heaven') — 99 hairpin turns up the mountain.",
+      history:{title:"'Heaven's Gate' — a hole in the mountain",
+      text:"Tianmen Cave is a <b>natural arch through the mountain</b> — 131.5 m tall, 57 m wide. It formed in <b>263 AD</b> during the Three Kingdoms period when an immense rock collapse opened the cliff face. Locals took it as a divine omen and renamed the mountain 'Tianmen' (Heaven's Gate). The Tianmen Mountain Temple at the summit dates to the Tang dynasty. The 999 stone steps up to the cave (the 'Stairway to Heaven') are tied to numerology — 9 is the highest single digit and was associated with the emperor and with heaven."}},
+     {name:"Tianmen Cave & Stairway to Heaven", desc:"Take the transmountain escalator to Tianmen Cave, then walk down the 999 steps. Cable car back to the parking lot. Then it's onto the airport for the flight to Shanghai."}
+   ]},
+
+  {day:17, date:"Mon · Jun 8, 2026", city:"Shanghai", title:"Museum, Park & Night Cruise",
+   summary:"Shanghai Museum East, Fuxing Park, free afternoon, Huangpu River night cruise.",
+   hotel:"St. Regis Shanghai Bund",
+   places:[
+     {name:"Shanghai Museum East", desc:"5,000+ years of Chinese art across bronzes, paintings, calligraphy, ceramics, and jade. Audio guide provided. The new East branch opened in 2024 and is enormous.",
+      history:{title:"One of the world's great Chinese-art collections",
+      text:"The original Shanghai Museum (downtown, opened 1996) was famous for being shaped like an ancient bronze ding vessel. The new <b>Shanghai Museum East</b> in Pudong opened in <b>February 2024</b> after years of construction — at 113,000 m² it's now one of the largest art museums in the world. The collection of bronzes, ceramics, and calligraphy is widely considered the finest in mainland China outside of the Palace Museum in Beijing."}},
+     {name:"Fuxing Park", desc:"A French-style park in the old French Concession. In the mornings and evenings, locals do ballroom dancing, calligraphy on the pavement with water brushes, tai chi, and chess."},
+     {name:"Huangpu River Night Cruise", desc:"~50 minutes seeing the Bund and Pudong skyscrapers fully lit up. The classic Shanghai-by-night experience."}
+   ]},
+
+  {day:18, date:"Tue · Jun 9, 2026", city:"Shanghai → Departure", title:"French Concession & Home",
+   summary:"Morning walking tour of the Former French Concession. Transfer to airport.",
+   transfer:"Flight CX381 (19:05–21:50) — arranged by you",
+   hotel:"— Departure —",
+   places:[
+     {name:"Former French Concession Walking Tour", desc:"Stroll down Wukang Road past the famous Normandie Apartments (a triangular Art Deco wedge) and other European-style villas. Plane trees, cafés, boutiques.",
+      history:{title:"The neighborhood France built",
+      text:"The French Concession was established in <b>1849</b> and lasted until <b>1943</b> — 94 years of being technically French soil inside Shanghai. The French planted the plane trees, laid out the wide avenues, and built the brick villas you'll see. After 1949 it became one of the most desirable residential neighborhoods in Shanghai, and has been carefully preserved. The <b>Normandie Apartments</b> (1924) were designed by the Hungarian-Slovak architect László Hudec."}},
+     {name:"Departure", desc:"Transferred to Shanghai airport for the long flight home. 谢谢中国 — thank you, China!"}
+   ]}
+];
+
+/* =========================================================
+   RESTAURANT DATA — vegetarian-friendly across cuisines
+========================================================= */
+const restaurants = {
+  "Shanghai":{
+    days:"Days 1–4 + 16–18",
+    mustTry:"<b>Xiaolongbao (soup dumplings)</b> at Nanxiang in Yuyuan Bazaar — they have <b>vegetarian versions</b>. Also try shēngjiānbāo (pan-fried buns), scallion oil noodles (cōng yóu bàn miàn), and stinky tofu if you're brave.",
+    cuisines:[
+      {label:"Vegetarian Chinese", em:"🥬", picks:[
+        {name:"Jen Dow Vegetarian (人道素食)", note:"Long-running, multiple branches. Buddhist-style mock meats."},
+        {name:"Godly (功德林)", note:"100+ year old historic vegetarian institution. Set menus available."},
+        {name:"Pure & Whole / Wujie (吴界)", note:"Upscale modern vegetarian. Multiple Bund-area locations."},
+        {name:"Vegetarian Lifestyle (枣子树)", note:"Reliable casual chain — good for quick lunches."},
+      ]},
+      {label:"Indian", em:"🇮🇳", picks:[
+        {name:"Vedas", note:"Hongqiao area — long-running, extensive veg menu."},
+        {name:"Masala Art", note:"Hengshan Road, Xuhui — pure veg available."},
+        {name:"Bukhara", note:"Pudong/Lujiazui — North Indian, strong veg selection."},
+      ]},
+      {label:"Italian", em:"🇮🇹", picks:[
+        {name:"Da Marco", note:"Classic Italian, good vegetarian pasta and pizza. Multiple locations."},
+        {name:"Mercato (Jean-Georges)", note:"3 on the Bund — view of Pudong, can request vegetarian menu."},
+      ]},
+      {label:"Thai", em:"🇹🇭", picks:[
+        {name:"Coconut Paradise", note:"Authentic Thai, can request vegetarian curries and noodles."},
+        {name:"Simply Thai", note:"Reliable chain — Xuhui & Pudong."},
+      ]},
+      {label:"Middle Eastern", em:"🥙", picks:[
+        {name:"Beirut (Yandang Road)", note:"Lebanese — falafel, hummus, mezze platters."},
+        {name:"Pita", note:"Israeli/Mediterranean — many vegetarian options."},
+      ]},
+    ]
+  },
+  "Hangzhou":{
+    days:"Day 3 (lunch only)",
+    mustTry:"<b>Lingyin Vegetarian Restaurant</b> inside the temple complex is famous and a perfect lunch stop on Day 3. Also Hangzhou is the home of <b>Longjing (Dragon Well) tea</b> — try it everywhere.",
+    cuisines:[
+      {label:"Vegetarian Chinese", em:"🥬", picks:[
+        {name:"Lingyin Vegetarian Restaurant", note:"Inside Lingyin Temple — Buddhist veg, wonderful setting. Built into your itinerary."},
+        {name:"Suchun (素春斋)", note:"Long-established Hangzhou vegetarian institution near West Lake."},
+      ]},
+    ],
+    note:"Day-trip only — lunch will likely be at Lingyin Temple. Dinner back in Shanghai."
+  },
+  "Yangshuo":{
+    days:"Days 4–7",
+    mustTry:"Local specialty is <b>beer fish</b> (not for us!). For us: vegetarian versions of <b>Guilin rice noodles</b> (mǐfěn) are widely available — order with mushrooms and pickled vegetables. Yangshuo's banana fritters and rice cakes are also great.",
+    cuisines:[
+      {label:"International Vegetarian", em:"🌱", picks:[
+        {name:"Pure Lotus Yangshuo", note:"Branch of the famous Beijing vegetarian chain — good fallback."},
+        {name:"Café China (West Street)", note:"International menu with reliable vegetarian options."},
+        {name:"Cloud 9", note:"Western/Asian fusion, vegetarian-friendly."},
+      ]},
+      {label:"Indian", em:"🇮🇳", picks:[
+        {name:"Indian Restaurant (West Street area)", note:"Limited but exists — verify on Google Maps before going."},
+      ]},
+      {label:"Hotel dining", em:"🏨", picks:[
+        {name:"Banyan Tree Yangshuo", note:"Resort restaurants will accommodate vegetarian requests reliably — ask at check-in."},
+      ]},
+    ],
+    note:"Yangshuo is small. International cuisine options are limited compared to big cities. The Banyan Tree resort kitchen is your safest bet for variety, plus Western-friendly cafés on West Street."
+  },
+  "Xi'an":{
+    days:"Days 7–9",
+    mustTry:"<b>Biangbiang noodles</b> (can be made vegetarian — ask sù bǎn 素版), <b>persimmon cakes</b> (shìzi bǐng), and <b>mung bean cakes</b> from the Muslim Quarter. The Quarter is gold for vegetarian street snacks.",
+    cuisines:[
+      {label:"Vegetarian Chinese", em:"🥬", picks:[
+        {name:"Tianlu Vegetarian (天鹿素食)", note:"Well-regarded vegetarian restaurant in central Xi'an."},
+        {name:"Muslim Quarter snacks", note:"Persimmon cakes, peanut candy, sesame buns, soy milk + youtiao — all naturally vegetarian. Walk and graze."},
+      ]},
+      {label:"Indian", em:"🇮🇳", picks:[
+        {name:"Punjab Restaurant", note:"Long-running Indian spot near the Bell Tower."},
+        {name:"Indian Style Restaurant", note:"Verify on Google Maps before going."},
+      ]},
+      {label:"Italian", em:"🇮🇹", picks:[
+        {name:"Gourmet Italian Trattoria", note:"Limited Italian options in Xi'an — your hotel concierge can recommend."},
+      ]},
+    ],
+    note:"Xi'an's strength is its rich tradition of wheat-based and Muslim-influenced street food, much of which is naturally vegetarian. The Muslim Quarter alone could feed you for a week."
+  },
+  "Luoyang":{
+    days:"Day 9 (one night)",
+    mustTry:"<b>Luoyang Water Banquet</b> (luòyáng shuǐxí) is the famous local cuisine — 24 dishes served as soups. Most are non-veg but ask for the vegetarian version (sù shuǐxí 素水席) — some restaurants will arrange it with notice. Also try <b>tofu hotpot</b> dishes.",
+    cuisines:[
+      {label:"Vegetarian Chinese", em:"🥬", picks:[
+        {name:"White Horse Temple area", note:"China's first Buddhist temple — vegetarian restaurants nearby."},
+        {name:"Hotel restaurant", note:"Marriott Luoyang dining will accommodate vegetarian. Ask concierge for off-site vegetarian recs too."},
+      ]},
+    ],
+    note:"Single overnight only. Luoyang is smaller and has fewer international cuisine options. Recommend dining at the hotel or asking your guide for trusted vegetarian Chinese spots."
+  },
+  "Beijing":{
+    days:"Days 10–14",
+    mustTry:"<b>Vegetarian Peking Duck</b> exists! Several restaurants offer mock-duck versions. Also try <b>jianbing</b> (savory crepe), <b>zhajiangmian</b> (noodles with bean sauce — easy to make veg), and tofu in every form.",
+    cuisines:[
+      {label:"Vegetarian Chinese", em:"🥬", picks:[
+        {name:"King's Joy (京兆尹)", note:"⭐ Michelin-starred vegetarian — RIGHT NEXT to Lama Temple. Perfect for Day 11 lunch."},
+        {name:"Pure Lotus (净心莲)", note:"Upscale Buddhist vegetarian. Multiple Beijing locations including Holiday Inn Lido."},
+        {name:"Baihe Vegetarian (百合素食)", note:"Casual, popular, courtyard setting in the hutongs."},
+      ]},
+      {label:"Indian", em:"🇮🇳", picks:[
+        {name:"Ganges", note:"Multiple branches — long-running, reliable veg menu."},
+        {name:"Indian Kitchen", note:"Sanlitun area — popular with the expat community."},
+        {name:"Mirchi", note:"Multiple locations — North Indian, good thalis."},
+      ]},
+      {label:"Italian", em:"🇮🇹", picks:[
+        {name:"Mercante", note:"Hutong location, romantic — handmade pasta with vegetarian options."},
+        {name:"Sureno (Opposite House)", note:"Sanlitun — modern Italian, multiple veg dishes."},
+        {name:"Cepe (Ritz Carlton, Financial Street)", note:"Upscale Italian — chef will arrange a vegetarian tasting."},
+      ]},
+      {label:"Thai", em:"🇹🇭", picks:[
+        {name:"Bua Restaurant", note:"Authentic Thai with strong veg curry selection."},
+        {name:"Purple Haze", note:"Sanlitun — popular spot, can adapt curries to vegetarian."},
+      ]},
+      {label:"Middle Eastern", em:"🥙", picks:[
+        {name:"Biteapitta", note:"Sanlitun area — Israeli, falafel and shakshuka."},
+        {name:"Rumi", note:"Persian — kashk-e bademjan, eggplant dishes, vegetarian rice."},
+      ]},
+    ]
+  },
+  "Zhangjiajie":{
+    days:"Days 14–16",
+    mustTry:"Hunan cuisine is famously spicy. Vegetarian Hunan versions exist — try <b>spicy stir-fried tofu</b>, <b>dry-pot mushrooms</b>, and <b>steamed pumpkin with sticky rice</b>. Tujia ethnic minority specialties include rice cakes and bamboo shoots.",
+    cuisines:[
+      {label:"Vegetarian options", em:"🌱", picks:[
+        {name:"Hampton by Hilton Wulingyuan", note:"Hotel kitchen will accommodate vegetarian — most reliable choice."},
+        {name:"Local restaurants near the park entrance", note:"Ask your guide to take you to vegetarian-friendly Tujia restaurants. Specify 'wǒ chī sù' (I'm vegetarian) clearly."},
+      ]},
+    ],
+    note:"Wulingyuan is a small tourist town; international cuisine is very limited. Plan to eat Chinese vegetarian or hotel meals. Your guide is your best resource here."
+  },
+};
+
+/* =========================================================
+   PRE-TRIP CHECKLIST
+========================================================= */
+const checklist = [
+  {cat:"📄 Documents (verify ASAP)", items:[
+    {t:"Passports valid 6+ months past June 9, 2026 (all 4 family members)", note:"Tarang AB695829, Dipali OB007622, Urmi AT179015, Saahil AT171730"},
+    {t:"Chinese tourist visas in hand for all 4", note:"Verify — without these, no boarding."},
+    {t:"Travel insurance purchased", note:"Suggested by China Discovery. Look for medical evacuation coverage."},
+    {t:"Print travel voucher (China Discovery confirmation letter)", note:"They specifically ask you to print it."},
+    {t:"Print all hotel and flight confirmations", note:"Backup in case of phone issues."},
+    {t:"Photocopies of passports stored separately", note:"Keep one copy in luggage, one with another family member."},
+    {t:"Email itinerary to a family member at home", note:"Emergency contact backup."},
+  ]},
+  {cat:"📱 Apps to Download Before Leaving", items:[
+    {t:"WeChat (微信)", note:"Essential. Used for everything in China — payments, messages, mini-apps. Set up Wallet with credit card before leaving (it now works for foreigners)."},
+    {t:"Alipay (支付宝)", note:"Backup payment app. Also has a 'Tour Pass' feature for foreigners with prepaid balance."},
+    {t:"Pleco", note:"Best Chinese-English dictionary, works offline. Free version is enough."},
+    {t:"Google Translate (offline Chinese pack)", note:"Download the offline pack — Google.com itself is blocked but the app's offline mode works."},
+    {t:"Maps.me or Organic Maps (offline maps)", note:"Google Maps is blocked. Apple Maps works but limited. Download offline maps for each city."},
+    {t:"Trip.com (Ctrip in China)", note:"For domestic transport bookings or changes."},
+    {t:"DiDi (滴滴)", note:"Chinese Uber — has English version. Set up before going."},
+    {t:"VPN app installed AND tested", note:"Set up before you go — many VPN sites are blocked once you arrive. ExpressVPN, Astrill, NordVPN are popular."},
+  ]},
+  {cat:"💵 Money & Payments", items:[
+    {t:"Order ~3000 RMB cash from bank", note:"For taxi back-up, small vendors, tips. Banks need 1-2 weeks lead time."},
+    {t:"Tell credit card company about travel dates", note:"Avoid blocked transactions in China."},
+    {t:"Bring no-foreign-fee credit card (e.g. Rogers Mastercard, Brim, Wealthsimple)", note:"Visa/Mastercard widely accepted in hotels and big restaurants."},
+    {t:"Bring debit card with PLUS/Cirrus for ATM withdrawals", note:"ICBC and Bank of China ATMs accept foreign cards."},
+    {t:"Set up WeChat/Alipay with credit card", note:"Both now accept Visa/Mastercard from foreigners. Test before flying."},
+    {t:"Tip envelopes prepared (RMB cash)", note:"~150 RMB/day per group for guides, 100 RMB/day for drivers. Multiply by ~10 days of guided touring."},
+  ]},
+  {cat:"💊 Health & Medications", items:[
+    {t:"All routine vaccinations up to date (verify)", note:"Hepatitis A, typhoid recommended for China. Check with doctor 4+ weeks ahead — should already be done."},
+    {t:"Personal prescriptions (with original packaging + scripts)", note:"Bring extra in case of trip delays. Some medications restricted in China — check first."},
+    {t:"Basic first aid: Imodium, Tylenol, Pepto, electrolytes", note:"Easier to bring than find."},
+    {t:"Hand sanitizer, wet wipes", note:"Essential, especially at attractions."},
+    {t:"N95/surgical masks", note:"Useful in crowds, on planes, and for air quality on bad days."},
+    {t:"Sunscreen + insect repellent", note:"Yangshuo and Zhangjiajie are sub-tropical."},
+  ]},
+  {cat:"👕 Clothing & Packing (May 23 – Jun 9)", items:[
+    {t:"Layers — temps range Shanghai 20-28°C, Beijing 18-30°C, Yangshuo/Zhangjiajie can hit 30°C+ with humidity", note:"Late May/early June is mild to warm. Pack light layers."},
+    {t:"Excellent walking shoes (broken in!)", note:"Forbidden City + Great Wall + Avatar mountains = lots of walking and stairs."},
+    {t:"Light rain jacket or compact umbrella", note:"Yangshuo and Zhangjiajie are misty/rainy in early summer."},
+    {t:"Modest clothing for temple visits", note:"Cover shoulders & knees at Lingyin, Lama Temple, Buddhist sites."},
+    {t:"Sun hats, sunglasses", note:"Strong UV in southern and central China."},
+    {t:"Smart-casual outfit for nice dinners", note:"St. Regis Bund, Pure & Whole, etc."},
+    {t:"One layer for the Glass Bridge (cool on top of mountains)", note:"Tianmen Mountain peak is significantly cooler than Zhangjiajie city."},
+    {t:"Day backpack for excursions", note:"Water bottle, snacks, jacket, camera."},
+  ]},
+  {cat:"🔌 Tech & Electronics", items:[
+    {t:"China power adapter (Type A, Type I)", note:"Same as North America in most cases (Type A) — but bring a universal adapter to be safe."},
+    {t:"Power bank with CCC certification", note:"⚠️ Non-CCC power banks WILL be confiscated at Chinese airports. Buy one rated for China specifically."},
+    {t:"Phone chargers + spare cables (USB-C, Lightning)", note:"Pack in carry-on."},
+    {t:"Camera + extra batteries + SD cards", note:"Avatar mountains and the Bund deserve a real camera."},
+    {t:"Headphones (noise-cancelling for flights)", note:"15+ hour journey home."},
+    {t:"International data plan or eSIM", note:"Holafly, Airalo, or your carrier's pass. eSIM means no physical SIM swap."},
+  ]},
+  {cat:"📚 Pre-Trip Watching & Reading (the fun part)", items:[
+    {t:"Watch: Avatar (2009)", note:"Before Day 15 — the floating mountains are inspired by Zhangjiajie."},
+    {t:"Watch: The Last Emperor (1987)", note:"Before Beijing — Forbidden City context. Filmed inside the actual palace."},
+    {t:"Watch: Anthony Bourdain — Parts Unknown, Shanghai episode", note:"Quick fun primer for Shanghai food and atmosphere."},
+    {t:"Read: Wikipedia summaries of Qin Shi Huang, the Tang Dynasty, Cixi", note:"15 minutes each makes the trip 10x richer."},
+    {t:"Watch: Marco Polo (Netflix) S1E1", note:"Atmospheric setup for Yuan dynasty/Hangzhou era."},
+  ]},
+  {cat:"🎒 Final Packing (last 3 days)", items:[
+    {t:"Carry-on: passport, visa, vouchers, meds, change of clothes, chargers, snacks", note:"Assume your checked bag could go missing."},
+    {t:"Check-in luggage under 20 kg / 44 lbs per person", note:"Domestic Chinese flights are strict. Charges apply for excess."},
+    {t:"Self-pressurized containers (sunscreen spray, hairspray) under 150ml each, max 600ml total", note:"Strict on Chinese trains."},
+    {t:"Refillable water bottle", note:"Do not drink tap water in China — but hotels provide kettles for boiling."},
+    {t:"Confirmed flight check-in 24 hours before CX316 (May 22)", note:"Set a phone reminder."},
+    {t:"Departure airport transport sorted", note:"Get to YYZ early — international flights need 3 hr buffer."},
+  ]},
+];
+
+/* =========================================================
+   TABS
+========================================================= */
+document.querySelectorAll("nav.tabs button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+    const map={map:"map-section",itinerary:"itinerary-section",eat:"eat-section",prep:"prep-section",info:"info-section"};
+    document.getElementById(map[btn.dataset.tab]).classList.add("active");
+    if(btn.dataset.tab==="map" && window._mapObj){
+      setTimeout(()=>window._mapObj.invalidateSize(),100);
+    }
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+
+/* =========================================================
+   MAP
+========================================================= */
+const map = L.map("map",{scrollWheelZoom:true}).setView([32.5,114],5);
+window._mapObj = map;
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  attribution:'© OpenStreetMap', maxZoom:18
+}).addTo(map);
+
+const order = ["Shanghai","Hangzhou","Shanghai","Yangshuo","Xi'an","Luoyang","Beijing","Zhangjiajie","Shanghai"];
+const pathCoords = order.map(c=>cities[c].coord);
+L.polyline(pathCoords,{color:"#d4a017",weight:3,opacity:.85,dashArray:"8 6"}).addTo(map);
+
+const cityDays = {};
+itinerary.forEach(d=>{
+  Object.keys(cities).forEach(cityName=>{
+    if(d.city.includes(cityName)){
+      cityDays[cityName] = cityDays[cityName]||[];
+      cityDays[cityName].push(d);
+    }
+  });
+});
+
+const customIcon = L.divIcon({
+  className:"",
+  html:'<div style="width:18px;height:18px;background:#b8272c;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #b8272c, 0 2px 6px rgba(0,0,0,.3)"></div>',
+  iconSize:[18,18],iconAnchor:[9,9]
+});
+
+Object.entries(cities).forEach(([name,info])=>{
+  const days = cityDays[name]||[];
+  const dayList = days.map(d=>`<li>Day ${d.day}: ${d.title}</li>`).join("");
+  const popup = `<b>${name}</b><br><span style="color:#666;font-size:12px">${info.dynasty}</span><br><br>${days.length?`<b>Days here:</b><ul style='padding-left:18px;margin:4px 0'>${dayList}</ul>`:""}`;
+  L.marker(info.coord,{icon:customIcon}).addTo(map).bindPopup(popup);
+});
+
+/* =========================================================
+   DAY CARDS
+========================================================= */
+const grid = document.getElementById("day-grid");
+itinerary.forEach(d=>{
+  const card = document.createElement("div");
+  card.className="day-card";
+  card.innerHTML = `
+    <div class="num">DAY ${d.day}</div>
+    <div class="date">${d.date}</div>
+    <div class="city">${d.city}</div>
+    <div class="title-line">${d.title}</div>
+    <div class="summary">${d.summary}</div>
+    <div class="badges">
+      ${d.transfer?'<span class="badge travel">✈ Travel day</span>':''}
+      <span class="badge">${d.places.length} place${d.places.length>1?'s':''}</span>
+    </div>
+  `;
+  card.addEventListener("click",()=>openModal(d));
+  grid.appendChild(card);
+});
+
+/* =========================================================
+   MODAL + PHOTO LOADING
+========================================================= */
+const modalBg = document.getElementById("modal-bg");
+document.getElementById("modal-close").addEventListener("click",closeModal);
+modalBg.addEventListener("click",e=>{if(e.target===modalBg)closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+function closeModal(){modalBg.classList.remove("show")}
+
+const photoCache = {};
+async function getPhoto(placeName){
+  if(photoCache[placeName] !== undefined) return photoCache[placeName];
+  const wikiTitle = photoLookup[placeName];
+  if(!wikiTitle){ photoCache[placeName] = null; return null; }
+  try{
+    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`);
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    const url = data.thumbnail?.source || data.originalimage?.source || null;
+    photoCache[placeName] = url;
+    return url;
+  }catch(e){
+    photoCache[placeName] = null;
+    return null;
+  }
+}
+
+function hotelLink(hotelName){
+  if(hotelName==="— Departure —") return hotelName;
+  const h = hotels[hotelName];
+  if(!h) return hotelName;
+  const q = encodeURIComponent(h.addr);
+  return `<a href="https://maps.apple.com/?q=${q}" target="_blank">${hotelName}</a>`;
+}
+
+async function openModal(d){
+  document.getElementById("m-num").textContent = `DAY ${d.day} OF 18`;
+  document.getElementById("m-title").textContent = `${d.city} — ${d.title}`;
+  document.getElementById("m-date").textContent = d.date;
+
+  const body = document.getElementById("m-body");
+  let html = "";
+  if(d.transfer) html += `<div class="transfer-bar">🚄 <b>Transfer:</b> ${d.transfer}</div>`;
+  html += `<div class="accom-bar">🏨 <b>Tonight:</b> ${hotelLink(d.hotel)}${d.hotel!=="— Departure —"?' <span style="color:#888;font-size:11px">· tap to open in Maps</span>':''}</div>`;
+
+  d.places.forEach((p,i)=>{
+    const photoId = `photo-${d.day}-${i}`;
+    html += `<div class="place">
+      <div class="place-photo" id="${photoId}"><span class="credit" style="display:none">Wikimedia Commons</span></div>
+      <h4><span class="icon">${i+1}</span> ${p.name}</h4>
+      <p>${p.desc}</p>`;
+    if(p.history){
+      const id = `hist-${d.day}-${i}`;
+      html += `<button class="history-btn" onclick="document.getElementById('${id}').classList.toggle('show')">📜 Learn the History</button>
+        <div class="history-panel" id="${id}">
+          <h5>${p.history.title}</h5>
+          <p>${p.history.text}</p>
+        </div>`;
+    }
+    html += `</div>`;
+  });
+  body.innerHTML = html;
+  modalBg.classList.add("show");
+
+  // Lazy-load photos
+  for(let i=0; i<d.places.length; i++){
+    const p = d.places[i];
+    const photoEl = document.getElementById(`photo-${d.day}-${i}`);
+    if(!photoEl) continue;
+    const url = await getPhoto(p.name);
+    if(url){
+      photoEl.style.backgroundImage = `url("${url}")`;
+      photoEl.querySelector('.credit').style.display = 'block';
+    } else {
+      photoEl.style.background = `linear-gradient(135deg, var(--red-deep), var(--gold))`;
+      photoEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:48px;opacity:.4">📍</div>`;
+    }
+  }
+}
+
+/* =========================================================
+   EAT TAB
+========================================================= */
+const eatGrid = document.getElementById("eat-grid");
+Object.entries(restaurants).forEach(([city,data])=>{
+  const block = document.createElement("div");
+  block.className = "city-block";
+  let cuisinesHtml = "";
+  data.cuisines.forEach(c=>{
+    let picksHtml = "";
+    c.picks.forEach(p=>{
+      picksHtml += `<div class="restaurant"><b>${p.name}</b><span class="note">${p.note}</span></div>`;
+    });
+    cuisinesHtml += `<div class="cuisine-row"><h4><span class="em">${c.em}</span> ${c.label}</h4>${picksHtml}</div>`;
+  });
+  block.innerHTML = `
+    <div class="city-block-head"><h3>${city}</h3><div class="days-here">${data.days}</div></div>
+    <div class="city-block-body">
+      <div class="must-try">⭐ <b>Must-try:</b> ${data.mustTry}</div>
+      ${cuisinesHtml}
+      ${data.note?`<div class="heads-up">💡 ${data.note}</div>`:''}
+    </div>
+  `;
+  eatGrid.appendChild(block);
+});
+
+/* =========================================================
+   PREP TAB — CHECKLIST
+========================================================= */
+const checks = JSON.parse(localStorage.getItem("china-checks") || "{}");
+const checklistEl = document.getElementById("checklist");
+
+function renderChecklist(){
+  checklistEl.innerHTML = "";
+  let total = 0, done = 0;
+  checklist.forEach((cat, ci)=>{
+    const catEl = document.createElement("div");
+    catEl.className = "checklist-cat" + (ci===0?" open":"");
+    let bodyHtml = "";
+    cat.items.forEach((item, ii)=>{
+      const key = `${ci}-${ii}`;
+      total++;
+      if(checks[key]) done++;
+      bodyHtml += `
+        <label class="check-item${checks[key]?' done':''}" data-key="${key}">
+          <input type="checkbox" ${checks[key]?'checked':''}>
+          <div class="text">${item.t}${item.note?`<small>${item.note}</small>`:''}</div>
+        </label>`;
+    });
+    catEl.innerHTML = `
+      <div class="checklist-cat-head" onclick="this.parentElement.classList.toggle('open')">
+        <h3>${cat.cat}</h3><div class="arrow">▶</div>
+      </div>
+      <div class="checklist-cat-body">${bodyHtml}</div>
+    `;
+    checklistEl.appendChild(catEl);
+  });
+  // Bind checkboxes
+  document.querySelectorAll(".check-item input").forEach(cb=>{
+    cb.addEventListener("change",e=>{
+      const key = e.target.parentElement.dataset.key;
+      checks[key] = e.target.checked;
+      localStorage.setItem("china-checks", JSON.stringify(checks));
+      e.target.parentElement.classList.toggle("done", e.target.checked);
+      updateProgress();
+    });
+  });
+  updateProgress();
+}
+function updateProgress(){
+  let total=0, done=0;
+  checklist.forEach((cat,ci)=>cat.items.forEach((_,ii)=>{
+    total++;
+    if(checks[`${ci}-${ii}`]) done++;
+  }));
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById("bar-fill").style.width = pct+"%";
+  document.getElementById("pct").textContent = pct+"%";
+}
+renderChecklist();
+
+/* =========================================================
+   CURRENCY CONVERTER (CAD <-> RMB, fixed approx rate)
+========================================================= */
+const RATE = 5.20; // CAD -> RMB (approx, May 2026 estimate)
+function convert(from){
+  const cad = document.getElementById("cad-input");
+  const rmb = document.getElementById("rmb-input");
+  if(from==="cad"){
+    rmb.value = cad.value ? (parseFloat(cad.value)*RATE).toFixed(2) : "";
+  } else {
+    cad.value = rmb.value ? (parseFloat(rmb.value)/RATE).toFixed(2) : "";
+  }
+}
+convert("cad"); // initial fill
+
+/* =========================================================
+   HOTEL LIST in Trip Info
+========================================================= */
+const hotelListEl = document.getElementById("hotel-list");
+Object.entries(hotels).forEach(([name,h])=>{
+  const li = document.createElement("li");
+  li.innerHTML = `<a href="https://maps.apple.com/?q=${encodeURIComponent(h.addr)}" target="_blank"><b>${name}</b></a> <span style="color:#888;font-size:12px">· ${h.days}</span>`;
+  hotelListEl.appendChild(li);
+});
+
+/* =========================================================
+   CALENDAR EXPORT (.ics)
+========================================================= */
+function pad(n){return n<10?'0'+n:n}
+function icsDate(d){
+  return d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+'T'+pad(d.getUTCHours())+pad(d.getUTCMinutes())+'00Z';
+}
+function icsAllDay(yyyy, mm, dd){
+  return `${yyyy}${pad(mm)}${pad(dd)}`;
+}
+function escapeICS(s){
+  return (s||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+
+function downloadICS(){
+  let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Sheth Family//China Trip 2026//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:Sheth Family China Trip\r\n";
+
+  itinerary.forEach((d, idx)=>{
+    const m = d.date.match(/(\w+) (\d+), (\d+)/);
+    if(!m) return;
+    const monthMap = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+    const mo = monthMap[m[1].slice(0,3)];
+    const day = parseInt(m[2]);
+    const yr = parseInt(m[3]);
+    const next = new Date(Date.UTC(yr, mo-1, day+1));
+    const ny = next.getUTCFullYear(), nm = next.getUTCMonth()+1, nd = next.getUTCDate();
+
+    const summary = `Day ${d.day}: ${d.city} — ${d.title}`;
+    let desc = d.summary + "\n\n";
+    if(d.transfer) desc += "Transfer: " + d.transfer + "\n";
+    if(d.hotel) desc += "Hotel: " + d.hotel + "\n";
+    desc += "\nPlaces:\n";
+    d.places.forEach(p => { desc += "• " + p.name + "\n"; });
+
+    const location = d.hotel && hotels[d.hotel] ? hotels[d.hotel].addr : d.city;
+
+    ics += "BEGIN:VEVENT\r\n";
+    ics += `UID:china-trip-day${d.day}@sheth.family\r\n`;
+    ics += `DTSTAMP:${icsDate(new Date())}\r\n`;
+    ics += `DTSTART;VALUE=DATE:${icsAllDay(yr,mo,day)}\r\n`;
+    ics += `DTEND;VALUE=DATE:${icsAllDay(ny,nm,nd)}\r\n`;
+    ics += `SUMMARY:${escapeICS(summary)}\r\n`;
+    ics += `DESCRIPTION:${escapeICS(desc)}\r\n`;
+    ics += `LOCATION:${escapeICS(location)}\r\n`;
+    ics += "END:VEVENT\r\n";
+  });
+
+  ics += "END:VCALENDAR\r\n";
+
+  const blob = new Blob([ics],{type:"text/calendar"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Sheth-China-Trip-2026.ics";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* =========================================================
+   SERVICE WORKER (offline caching) — only when hosted
+========================================================= */
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  const swCode = `
+    const CACHE = 'china-trip-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll([location.pathname])));
+    });
+    self.addEventListener('activate', e => self.clients.claim());
+    self.addEventListener('fetch', e => {
+      if(e.request.method !== 'GET') return;
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          if(cached) return cached;
+          return fetch(e.request).then(resp => {
+            if(resp.ok && (e.request.url.startsWith('http'))){
+              const clone = resp.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone));
+            }
+            return resp;
+          }).catch(() => cached || new Response('Offline'));
+        })
+      );
+    });
+  `;
+  const blob = new Blob([swCode], {type:'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(e => console.log('SW failed:', e));
+}
+</script>
+</body>
+</html>
